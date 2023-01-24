@@ -3,13 +3,14 @@ package org.example;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import io.javalin.Javalin;
-import io.javalin.http.staticfiles.Location;
 import io.javalin.json.JsonMapper;
 import io.javalin.plugin.bundled.CorsPluginConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.example.router.Router;
+import org.example.terminal.TerminalEmulator;
 import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Type;
+import java.time.Duration;
 
 @Slf4j
 public class App {
@@ -27,17 +28,18 @@ public class App {
             return gson.fromJson(json, targetType);
         }
     };
+    private final WebsocketConnections websocketConnections = new WebsocketConnections();
+    private final TerminalEmulator terminalEmulator = new TerminalEmulator();
 
     public static void main(String[] args) {
         log.info("Starting the app");
         new App().start();
-
     }
 
     private void start() {
         log.info("App started");
         Javalin server = buildServer();
-        Router router = new Router(server);
+        Router router = new Router(server, websocketConnections, terminalEmulator);
         router.setupRoutes();
         server.start(12000);
         Runtime.getRuntime().addShutdownHook(new Thread(server::stop));
@@ -45,6 +47,9 @@ public class App {
 
     private Javalin buildServer() {
         return Javalin.create(config -> {
+                    config.jetty.wsFactoryConfig(jettyWebSocketServletFactory -> {
+                        jettyWebSocketServletFactory.setIdleTimeout(Duration.ofSeconds(60));
+                    });
                     config.jsonMapper(gsonMapper);
                     config.plugins.enableCors(cors -> cors.add(CorsPluginConfig::anyHost));
                 }

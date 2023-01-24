@@ -3,7 +3,10 @@ package org.example.router;
 import io.javalin.Javalin;
 import io.javalin.http.Header;
 import lombok.extern.slf4j.Slf4j;
-import org.example.resources.SpeechToTextApiResource;
+import org.example.WebsocketConnections;
+import org.example.handlers.SpeechToTextApiResource;
+import org.example.terminal.TerminalEmulator;
+import java.util.UUID;
 import static io.javalin.apibuilder.ApiBuilder.before;
 import static io.javalin.apibuilder.ApiBuilder.post;
 
@@ -16,9 +19,13 @@ public class Router {
     public static final String SPEECH_TO_TEXT_RESOURCE = API + "/speech-to-text";
 
     private final Javalin server;
+    private final WebsocketConnections websocketConnections;
+    private final TerminalEmulator terminalEmulator;
 
-    public Router(Javalin server) {
+    public Router(Javalin server, WebsocketConnections websocketConnections, TerminalEmulator terminalEmulator) {
         this.server = server;
+        this.websocketConnections = websocketConnections;
+        this.terminalEmulator = terminalEmulator;
     }
 
     public void setupRoutes() {
@@ -40,7 +47,28 @@ public class Router {
                 log.info("crossHeaders: {}", crossHeaders);
             });
 
-            post(SPEECH_TO_TEXT_RESOURCE, new SpeechToTextApiResource());
+            post(SPEECH_TO_TEXT_RESOURCE, new SpeechToTextApiResource(terminalEmulator));
         });
+
+//        server.ws("/websocket/transcript", ws -> {
+//            ws.onConnect(ctx -> {
+//                UUID clientId = websocketConnections.addUserConnection(ctx);
+//                ctx.send("{\"id\": \"" + clientId + "\"}");
+//            });
+//            ws.onClose(ctx -> {
+//                ctx.send("{\"onClose\": \"onClose\"}");
+//            });
+//            ws.onMessage(ctx -> {
+//                new Thread(() -> {
+//                    try {
+//                        Thread.sleep(2000);
+//                        ctx.send("{\"message\": \"" + ctx.message() + "\"}");
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }).start();
+//                ctx.send("{\"message\": \"" + ctx.message() + "\"}");
+//            });
+//        });
     }
 }
