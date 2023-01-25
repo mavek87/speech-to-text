@@ -1,17 +1,13 @@
 import {useReactMediaRecorder} from "react-media-recorder";
 import axios from 'axios';
 import {useState} from "react";
+import {microphone, trashCanIcon} from "../icons/icons";
+import AudioInputText from "./AudioInputText";
+import AudioButton from "./AudioButton/AudioButton";
 
 const RecordView = () => {
     const [transcription, setTranscription] = useState("");
     const [counter, setCounter] = useState(0);
-    const [millis, setMillis] = useState(0);
-    const [seconds, setSeconds] = useState(0);
-
-    const updateMillisAndSeconds = (ms: number) => {
-        setMillis(Math.floor(ms) % 100);
-        setSeconds(Math.floor(ms / 1000) % 60);
-    }
 
     const postVoiceToServer = async (blob: Blob) => {
         try {
@@ -32,19 +28,12 @@ const RecordView = () => {
     }
 
     const onStartRecording = () => {
-        setMillis(0);
-        setSeconds(0);
+        setCounter(0);
     }
 
     const onStopRecording = async (blobUrl: string, blob: Blob) => {
         setCounter(0);
-        setMillis(0);
-        setSeconds(0);
-        const intervalID = setInterval(() => setCounter((oldCounter) => {
-            const counter = oldCounter + 1;
-            updateMillisAndSeconds(counter)
-            return counter;
-        }), 1);
+        const intervalID = setInterval(() => setCounter((oldCounter) => oldCounter + 1), 1000);
         setTranscription("Elaborazione trascrizione in corso ...")
         console.log(blob);
         const data = await postVoiceToServer(blob);
@@ -70,7 +59,7 @@ const RecordView = () => {
             <div>
                 <p>{status}</p>
                 <p>{mediaBlobUrl}</p>
-                {status !== 'recording' && <button onClick={startRecording}>Start Recording</button>}
+                {status !== 'recording' && <button style={{height: "30px"}} onClick={startRecording}>Speak {microphone}</button>}
                 {status === 'recording' && <button onClick={stopRecording}>Stop Recording</button>}
                 <video src={mediaBlobUrl} controls autoPlay/>
             </div>
@@ -79,12 +68,14 @@ const RecordView = () => {
             <br/>
             <div>
                 <h2>Di qualcosa per vederlo trascritto sotto:</h2>
-                {<h5>tempo impiegato: {seconds}s, {millis}ms</h5>}
+                {<h5>tempo impiegato: {counter}</h5>}
                 <div>
                     {status === 'stopped' && transcription}
                     {status === 'recording' && 'In ascolto ...'}
                 </div>
-                <input type="text"></input>
+                <AudioInputText postVoiceToServer={postVoiceToServer} />
+                {/*<br/>*/}
+                {/*<AudioButton onClick={() => { console.log("ciao")}}/>*/}
             </div>
         </>
     );

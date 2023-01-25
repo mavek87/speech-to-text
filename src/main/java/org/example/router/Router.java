@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.WebsocketConnections;
 import org.example.handlers.SpeechToTextApiResource;
 import org.example.terminal.TerminalEmulator;
-import java.util.UUID;
 import static io.javalin.apibuilder.ApiBuilder.before;
 import static io.javalin.apibuilder.ApiBuilder.post;
 
