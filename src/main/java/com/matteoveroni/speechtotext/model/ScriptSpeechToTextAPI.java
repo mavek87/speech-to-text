@@ -1,12 +1,13 @@
-package org.example.model;
+package com.matteoveroni.speechtotext.model;
 
+import com.matteoveroni.speechtotext.terminal.TerminalEmulator;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
-import org.example.terminal.TerminalEmulator;
 import java.io.IOException;
 
 @Slf4j
 public class ScriptSpeechToTextAPI implements SpeechToTextAPI {
+
     private static final String PYTHON_SYS_PATH = "/home/mavek/anaconda3/bin/python";
     private static final String PYTHON_SCRIPT_FOLDER = "scripts";
     private static final String SPEECH_TO_TEXT_SCRIPT = PYTHON_SCRIPT_FOLDER + "/whisper_speech_to_text.py";

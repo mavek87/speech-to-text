@@ -1,11 +1,10 @@
-package org.example.router;
+package com.matteoveroni.speechtotext.router;
 
+import com.matteoveroni.speechtotext.handlers.SpeechToTextApiResource;
 import io.javalin.Javalin;
 import io.javalin.http.Header;
 import lombok.extern.slf4j.Slf4j;
-import org.example.WebsocketConnections;
-import org.example.handlers.SpeechToTextApiResource;
-import org.example.terminal.TerminalEmulator;
+import javax.inject.Inject;
 import static io.javalin.apibuilder.ApiBuilder.before;
 import static io.javalin.apibuilder.ApiBuilder.post;
 
@@ -14,17 +13,15 @@ public class Router {
 
     public static final String ROOT = "/";
     public static final String API = ROOT + "api";
-
     public static final String SPEECH_TO_TEXT_RESOURCE = API + "/speech-to-text";
 
     private final Javalin server;
-    private final WebsocketConnections websocketConnections;
-    private final TerminalEmulator terminalEmulator;
+    private final SpeechToTextApiResource speechToTextApiResource;
 
-    public Router(Javalin server, WebsocketConnections websocketConnections, TerminalEmulator terminalEmulator) {
+    @Inject
+    public Router(Javalin server, SpeechToTextApiResource speechToTextApiResource) {
         this.server = server;
-        this.websocketConnections = websocketConnections;
-        this.terminalEmulator = terminalEmulator;
+        this.speechToTextApiResource = speechToTextApiResource;
     }
 
     public void setupRoutes() {
@@ -46,7 +43,7 @@ public class Router {
                 log.info("crossHeaders: {}", crossHeaders);
             });
 
-            post(SPEECH_TO_TEXT_RESOURCE, new SpeechToTextApiResource(terminalEmulator));
+            post(SPEECH_TO_TEXT_RESOURCE, speechToTextApiResource);
         });
 
 //        server.ws("/websocket/transcript", ws -> {

@@ -1,4 +1,4 @@
-package org.example.model;
+package com.matteoveroni.speechtotext.model;
 
 public interface SpeechToTextAPI {
 

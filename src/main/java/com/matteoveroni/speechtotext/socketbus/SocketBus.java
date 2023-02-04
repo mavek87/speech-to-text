@@ -1,4 +1,4 @@
-package org.example.socketbus;
+package com.matteoveroni.speechtotext.socketbus;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class SocketBus {
 
     public void waitResponse() {

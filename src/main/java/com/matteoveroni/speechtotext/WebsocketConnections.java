@@ -1,4 +1,4 @@
-package org.example;
+package com.matteoveroni.speechtotext;
 
 import io.javalin.websocket.WsContext;
 import java.util.Map;

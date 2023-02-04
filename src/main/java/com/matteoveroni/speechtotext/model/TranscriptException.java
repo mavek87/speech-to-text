@@ -1,4 +1,4 @@
-package org.example.model;
+package com.matteoveroni.speechtotext.model;
 
 public class TranscriptException extends Exception{
 

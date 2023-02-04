@@ -1,12 +1,13 @@
-package org.example.handlers;
+package com.matteoveroni.speechtotext.handlers;
 
+import com.matteoveroni.speechtotext.model.ScriptSpeechToTextAPI;
+import com.matteoveroni.speechtotext.model.TranscriptException;
+import com.matteoveroni.speechtotext.terminal.TerminalEmulator;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import lombok.extern.slf4j.Slf4j;
-import org.example.model.ScriptSpeechToTextAPI;
-import org.example.model.TranscriptException;
-import org.example.terminal.TerminalEmulator;
 import org.jetbrains.annotations.NotNull;
+import javax.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,6 +19,7 @@ public class SpeechToTextApiResource implements Handler {
 
     private final TerminalEmulator terminalEmulator;
 
+    @Inject
     public SpeechToTextApiResource(TerminalEmulator terminalEmulator) {
         this.terminalEmulator = terminalEmulator;
     }
@@ -57,7 +59,7 @@ public class SpeechToTextApiResource implements Handler {
                 isFileDeleted = filePath.toFile().delete();
             } finally {
                 if (!isFileDeleted) {
-                    log.warn("File {} cannot be deleted", filePath.toAbsolutePath());
+                    log.warn("File {} cannot be deleted", filePath);
                 }
             }
         }).start();

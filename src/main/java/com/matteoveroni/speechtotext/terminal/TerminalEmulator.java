@@ -1,4 +1,4 @@
-package org.example.terminal;
+package com.matteoveroni.speechtotext.terminal;
 
 import lombok.extern.slf4j.Slf4j;
 import java.io.BufferedReader;
