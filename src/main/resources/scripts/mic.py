@@ -11,14 +11,14 @@ import torch
 import numpy as np
 
 @click.command()
-@click.option("--model", default="base", help="Model to use", type=click.Choice(["tiny","base", "small","medium","large"]))
-@click.option("--english", default=False, help="Whether to use English model",is_flag=True, type=bool)
-@click.option("--verbose", default=False, help="Whether to print verbose output", is_flag=True,type=bool)
+@click.option("--model", default="medium", help="Model to use", type=click.Choice(["tiny", "base", "small", "medium", "large"]))
+@click.option("--english", default=False, help="Whether to use English model", is_flag=True, type=bool)
+@click.option("--verbose", default=False, help="Whether to print verbose output", is_flag=True, type=bool)
 @click.option("--energy", default=300, help="Energy level for mic to detect", type=int)
-@click.option("--dynamic_energy", default=False,is_flag=True, help="Flag to enable dynamic engergy", type=bool)
+@click.option("--dynamic_energy", default=False, is_flag=True, help="Flag to enable dynamic engergy", type=bool)
 @click.option("--pause", default=0.8, help="Pause time before entry ends", type=float)
-@click.option("--save_file",default=False, help="Flag to save file", is_flag=True,type=bool)
-def main(model, english,verbose, energy, pause,dynamic_energy,save_file):
+@click.option("--save_file", default=True, help="Flag to save file", is_flag=True, type=bool)
+def main(model, english, verbose, energy, pause, dynamic_energy, save_file):
     temp_dir = tempfile.mkdtemp() if save_file else None
     #there are no english models for large
     if model != "large" and english:
@@ -66,9 +66,9 @@ def transcribe_forever(audio_queue, result_queue, audio_model, english, verbose,
     while True:
         audio_data = audio_queue.get()
         if english:
-            result = audio_model.transcribe(audio_data,language='italian')
+            result = audio_model.transcribe(audio_data, language='italian')
         else:
-            result = audio_model.transcribe(audio_data)
+            result = audio_model.transcribe(audio_data, language='italian')
 
         if not verbose:
             predicted_text = result["text"]

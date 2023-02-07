@@ -14,7 +14,7 @@ model = whisper.load_model(mod)
 if lang is None:
     result = model.transcribe(filename)
 else:
-    result = model.transcribe(filename,language=lang)
+    result = model.transcribe(filename, language=lang)
 
 if verbose is True or verbose == "True":
     print(result)

@@ -26,3 +26,6 @@ It also requires the command-line tool ffmpeg to be installed on your system, wh
 
 #### on Ubuntu or Debian
 sudo apt update && sudo apt install ffmpeg
+
+#### Other doc on Whisper
+- https://huggingface.co/openai/whisper-medium
